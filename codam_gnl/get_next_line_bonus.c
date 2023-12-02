@@ -6,12 +6,12 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/12 12:50:44 by kwchu         #+#    #+#                 */
-/*   Updated: 2023/10/26 12:47:08 by kwchu         ########   odam.nl         */
+/*   Updated: 2023/12/02 11:27:36 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static void	*ft_free(char **s)
 {
