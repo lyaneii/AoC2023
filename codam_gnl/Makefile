@@ -1,17 +1,14 @@
-NAME = output
+NAME = libgnl.a
 
-SRC = calib.c
+SRC = get_next_line.c get_next_line_utils.c
 
 OBJ = ${SRC:.c=.o}
 
 all: ${NAME}
 
 ${NAME}: ${OBJ}
-	${MAKE} -C ../codam_gnl
-	cc -o ${NAME} ${OBJ} -L../codam_gnl -lgnl
+	ar rcs $@ $^
 
-%.o: %.c
-	cc -I../codam_gnl -c $< -o $@
 clean:
 	rm -f ${OBJ}
 

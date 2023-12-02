@@ -7,6 +7,7 @@ OBJ = ${SRC:.c=.o}
 all: ${NAME}
 
 ${NAME}: ${OBJ}
+	${MAKE} -C ../codam_gnl
 	cc -o ${NAME} ${OBJ} -L../codam_gnl -lgnl
 
 %.o: %.c
