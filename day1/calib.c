@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
-void	strrev(char *str, int size)
+static void	strrev(char *str, int size)
 {
 	int i = 0;
 	char tmp;
@@ -114,7 +114,6 @@ int main (void)
 		}
 		free(str);
 	}
-	free(str);
 	close(fd);
 	printf("nbr = %d\n", nbr);
 	return (0);
