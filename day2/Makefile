@@ -1,6 +1,6 @@
 NAME = output
 
-SRC = cube2.c
+SRC = cube.c
 
 OBJ = ${SRC:.c=.o}
 
@@ -14,7 +14,7 @@ ${NAME}: ${OBJ}
 clean:
 	rm -f ${OBJ}
 
-fclean:
+fclean: clean
 	rm -f ${NAME}
 
 re: fclean all
