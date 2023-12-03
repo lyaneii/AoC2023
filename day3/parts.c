@@ -23,11 +23,10 @@ int convert_nbr(char *str, int i)
 	offset = floor(log10(tmp)) + 1;
 	while (str[i] && offset-- > 0)
 		str[i + offset] = '.';
-	// printf("nbr %d\n", tmp);
 	return (tmp);
 }
 
-char check(char **str, int j)
+int check(char **str, int j)
 {
 	while (str[1][j] != '.' && str[1][j] != 0)
 	{
@@ -81,7 +80,6 @@ int main(void)
 		{
 			if (isdigit(str[1][i]) && check(str, i))
 			{
-				printf("map \n%s%s%s\n", str[0], str[1], str[2]);
 				total += convert_nbr(str[1], i);
 				printf("total %d\n", total);
 			}
