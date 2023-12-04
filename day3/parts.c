@@ -60,7 +60,6 @@ int main(void)
 	int fd = open("input.txt", O_RDONLY);
 	int i = 0;
 	int total = 0;
-	int offset = 0;
 	int len = 0;
 	char **str;
 
@@ -75,7 +74,6 @@ int main(void)
 	{
 		if (!str[1])
 			break ;
-		
 		while (str[1][i])
 		{
 			if (isdigit(str[1][i]) && check(str, i))
