@@ -1,6 +1,6 @@
 NAME = output
 
-SRC = seed2.c
+SRC = seed.c
 
 OBJ = ${SRC:.c=.o}
 
