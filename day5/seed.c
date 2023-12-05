@@ -82,7 +82,6 @@ int main (int argc, char **argv)
 	int i = 0;
 	char *str;
 	long *seeds;
-	int j = 0;
 
 	if (argc != 2)
 		return (printf("Usage: %s <filename>\n", argv[0]));
