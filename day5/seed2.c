@@ -32,21 +32,26 @@ long	*store_array(char *str, int size)
 	return (array);
 }
 
-void	convert_seeds(t_seedrange seedrange, long *map, t_seedrange *tmp)
+void	convert_seeds(t_seedrange *seedrange, long *map, t_seedrange *tmp)
 {
 	long new_start = 0;
 	long new_end = 0;
 
-	if (seedrange.start < map[1])
+	if (seedrange->start < map[1])
 		tmp->start = map[1];
-	else if (seedrange.end > map[1] + map[2])
+	else if (seedrange->end > map[1] + map[2])
 		tmp->end = map[1] + map[2];
 }
 
-void	check_map(t_seedrange *seedrange, int fd, char **str)
+void	check_map(t_seedrange **seedrange, int fd, char **str)
 {
 	int i = 0;
 	long *map;
+	t_seedrange *tmp;
+
+	tmp = malloc(sizeof(t_seedrange));
+	tmp->start = (*seedrange)->start;
+	tmp->end = (*seedrange)->end;
 	while (*str && isdigit((*str)[0]))
 	{
 		map = store_array(*str, MAP_SIZE);
@@ -54,13 +59,13 @@ void	check_map(t_seedrange *seedrange, int fd, char **str)
 			return ;
 		free(*str);
 		print_long_array(map, "map", MAP_SIZE);
-		convert_seeds(*seeds, map, tmp);
+		convert_seeds((*seedrange, map, tmp);
 		print_long_array(tmp, "tmp", SEED_SIZE);
 		*str = get_next_line(fd);
 	}
-	free(*seeds);
-	*seeds = tmp;
-	print_long_array(*seeds, "new seeds", SEED_SIZE);
+	free(*seedrange);
+	*seedrange = tmp;
+	// print_long_array(*seedrange, "new seeds", SEED_SIZE);
 }
 
 int	next_map(char **str, int fd, int times)
@@ -77,22 +82,22 @@ int	next_map(char **str, int fd, int times)
 	return (1);
 }
 
-t_seedrange *store_seed_ranges(char *str)
+t_seedrange **store_seed_ranges(char *str)
 {
-	t_seedrange *seed_ranges;
+	t_seedrange **seed_ranges;
 	int index = 0;
 	int i = 0;
 
 	i = 0;
-	seed_ranges = calloc(SEED_SIZE / 2, sizeof(t_seedrange));
+	seed_ranges = calloc(SEED_SIZE / 2, sizeof(t_seedrange *));
 	while (str[i])
 	{
-		seed_ranges[index].start = atol(str + i);
+		seed_ranges[index]->start = atol(str + i);
 		while (isdigit(str[i]))
 			i++;
 		while (!isdigit(str[i]) && str[i])
 			i++;
-		seed_ranges[index].end = (seed_ranges[index].start + atol(str + i)) - 1;
+		seed_ranges[index]->end = (seed_ranges[index]->start + atol(str + i)) - 1;
 		while (isdigit(str[i]))
 			i++;
 		while (!isdigit(str[i]) && str[i])
@@ -109,7 +114,7 @@ int main (int argc, char **argv)
 	int i = 0;
 	int index = 0;
 	char *str;
-	t_seedrange *seedranges;
+	t_seedrange **seedranges;
 	int j = 0;
 
 	if (argc != 2)
