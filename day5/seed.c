@@ -51,14 +51,14 @@ void	check_map(long **seeds, int fd, char **str)
 		if (!map)
 			return ;
 		free(*str);
-		print_long_array(map, "map", MAP_SIZE);
+		// print_long_array(map, "map", MAP_SIZE);
 		convert_seeds(*seeds, map, tmp);
-		print_long_array(tmp, "tmp", SEED_SIZE);
+		// print_long_array(tmp, "tmp", SEED_SIZE);
 		*str = get_next_line(fd);
 	}
 	free(*seeds);
 	*seeds = tmp;
-	print_long_array(*seeds, "new seeds", SEED_SIZE);
+	// print_long_array(*seeds, "new seeds", SEED_SIZE);
 }
 
 int	next_map(char **str, int fd, int times)
@@ -77,7 +77,7 @@ int	next_map(char **str, int fd, int times)
 
 int main (int argc, char **argv)
 {
-	long final = 0;
+	long lowest = 0;
 	int fd;
 	int i = 0;
 	char *str;
@@ -100,26 +100,37 @@ int main (int argc, char **argv)
 			i++;
 		while (!isdigit(str[i]))
 			i++;
+		
+		// store seeds into array
 		seeds = store_array(str + i, SEED_SIZE);
-		print_long_array(seeds, "initial seeds", SEED_SIZE);
+
+		// next line
 		str = get_next_line(fd);
+
+		// remap all the seeds
 		while (str)
 		{
 			if (!str)
 				break ;
+			
+			// shift to next map
 			if (str[0] == '\n')
 				next_map(&str, fd, 2);
+			
+			// remap with the new map
 			check_map(&seeds, fd, &str);
 			printf("\n");
 		}
 		break ;
 	}
-	final = seeds[0];
+
+	// calculate lowest
+	lowest = seeds[0];
 	for (int x = 0; x < SEED_SIZE; x++)
 	{
-		if (seeds[x] < final)
-			final = seeds[x];
+		if (seeds[x] < lowest)
+			lowest = seeds[x];
 	}
-	printf("final %li\n", final);
+	printf("lowest %li\n", lowest);
 	close(fd);
 }
