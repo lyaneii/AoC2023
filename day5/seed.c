@@ -1,6 +1,8 @@
 #include "aoc.h"
-#define SEED_SIZE 4
+#define SEED_SIZE 20
 #define MAP_SIZE 3
+// test seed 4
+// input seed 20
 
 long	*store_array(char *str, int size)
 {
@@ -23,47 +25,50 @@ long	*store_array(char *str, int size)
 	return (array);
 }
 
-void	convert_seeds(long *seeds, long *map)
+void	convert_seeds(long *seeds, long *map, long *tmp)
 {
 	int i = 0;
 
 	while (i < SEED_SIZE)
 	{
 		if (seeds[i] >= map[1] && seeds[i] < (map[1] + map[2]))
-			seeds[i] = map[0] + seeds[i] - map[1];
+			tmp[i] = map[0] + seeds[i] - map[1];
 		i++;
 	}
 }
 
-void	check_map(long *seeds, int fd, char *str)
+void	check_map(long **seeds, int fd, char **str)
 {
 	int i = 0;
 	long *map;
-	
-	while (isdigit(str[0]))
+	long *tmp;
+
+	tmp = calloc(SEED_SIZE, sizeof(long));
+	memcpy(tmp, *seeds, SEED_SIZE * sizeof(long));
+	while (*str && isdigit((*str)[0]))
 	{
-		while (i < SEED_SIZE)
-		{
-			map = store_array(str, MAP_SIZE);
-			free(str);
-			print_long_array(map, "map", MAP_SIZE);
-			if (!map)
-				return ;
-			convert_seeds(seeds + i, map);
-			print_long_array(seeds, "seeds", SEED_SIZE);
-			str = get_next_line(fd);
-			i++;
-		}
+		map = store_array(*str, MAP_SIZE);
+		if (!map)
+			return ;
+		free(*str);
+		print_long_array(map, "map", MAP_SIZE);
+		convert_seeds(*seeds, map, tmp);
+		print_long_array(tmp, "tmp", SEED_SIZE);
+		*str = get_next_line(fd);
 	}
+	free(*seeds);
+	*seeds = tmp;
+	print_long_array(*seeds, "new seeds", SEED_SIZE);
 }
 
-int	next_map(char *str, int fd, int times)
+int	next_map(char **str, int fd, int times)
 {
 	while (times > 0)
 	{
-		free(str);
-		str = get_next_line(fd);
-		if (!str)
+		free(*str);
+		*str = get_next_line(fd);
+		// printf("next map %s\n", *str);
+		if (!*str)
 			return (0);
 		times--;
 	}
@@ -72,6 +77,7 @@ int	next_map(char *str, int fd, int times)
 
 int main (int argc, char **argv)
 {
+	long final = 0;
 	int fd;
 	int i = 0;
 	char *str;
@@ -96,19 +102,24 @@ int main (int argc, char **argv)
 			i++;
 		seeds = store_array(str + i, SEED_SIZE);
 		print_long_array(seeds, "initial seeds", SEED_SIZE);
-		if (!seeds)
-			return (free(str), -1);
 		str = get_next_line(fd);
-		while (j < 4)
+		while (str)
 		{
-			if (str[0] == '\n')
-				next_map(str, fd, 2);
 			if (!str)
 				break ;
-			check_map(seeds, fd, str);
-			printf("checked\n");
-			j++;
+			if (str[0] == '\n')
+				next_map(&str, fd, 2);
+			check_map(&seeds, fd, &str);
+			printf("\n");
 		}
+		break ;
 	}
+	final = seeds[0];
+	for (int x = 0; x < SEED_SIZE; x++)
+	{
+		if (seeds[x] < final)
+			final = seeds[x];
+	}
+	printf("final %li\n", final);
 	close(fd);
 }
