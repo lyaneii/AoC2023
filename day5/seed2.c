@@ -11,13 +11,11 @@ long		lowest_location(t_seedrange *seed_ranges, long lowest);
 
 int main (int argc, char **argv)
 {
+	t_seedrange *seedranges;
 	int fd;
 	int i = 0;
-	int index = 0;
 	long lowest;
 	char *str;
-	t_seedrange *seedranges;
-	int j = 0;
 
 	if (argc != 2)
 		return (printf("Usage: %s <filename>\n", argv[0]));
