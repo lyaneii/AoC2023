@@ -1,15 +1,9 @@
-#include "aoc.h"
-#define SEED_SIZE 20
+#include "../include/aoc.h"
+#include "part2_utils.h"
+#define SEED_SIZE 2
 #define MAP_SIZE 3
-// test seed 4
-// input seed 20
-
-typedef struct s_seedrange
-{
-	long start;
-	long end;
-
-}	t_seedrange;
+// test seed 2
+// input seed 10
 
 long	*store_array(char *str, int size)
 {
@@ -32,26 +26,66 @@ long	*store_array(char *str, int size)
 	return (array);
 }
 
-void	convert_seeds(t_seedrange *seedrange, long *map, t_seedrange *tmp)
+void	handle_intersects(t_seedrange **seed_ranges, long *map)
 {
-	long new_start = 0;
-	long new_end = 0;
+	t_seedrange *tmp = NULL;
 
-	if (seedrange->start < map[1])
-		tmp->start = map[1];
-	else if (seedrange->end > map[1] + map[2])
-		tmp->end = map[1] + map[2];
+	// printf("start %li range %li\n", (*seed_ranges)->start, (*seed_ranges)->range);
+	while (*seed_ranges)
+	{
+		// inside overlap	[===(xxx)===]
+		if ((*seed_ranges)->start >= map[1] && (*seed_ranges)->start + (*seed_ranges)->range - 1 < map[1] + map[2] - 1)
+		{
+			inside_bounds(&tmp, (*seed_ranges)->start + map[0] - map[1], (*seed_ranges)->range);
+			printf("start %li range %li\n", (*seed_ranges)->start, (*seed_ranges)->range);
+			printf("inside overlap	[===(xxx)===]\n");
+		}
+		
+		// outside overlap	(xxx[===========]xxx)
+		else if ((*seed_ranges)->start < map[1] && (*seed_ranges)->start + (*seed_ranges)->range - 1 >= map[1] + map[2] - 1)
+		{
+			outside_bounds(&tmp, (*seed_ranges)->start, map[1] - (*seed_ranges)->start); // left
+			outside_bounds(&tmp, map[1] + map[2], (*seed_ranges)->start + (*seed_ranges)->range - map[1] + map[2]); // right
+			inside_bounds(&tmp, (*seed_ranges)->start + map[0] - map[1], (*seed_ranges)->range);
+			printf("start %li range %li\n", (*seed_ranges)->start, (*seed_ranges)->range);
+			printf("outside overlap	(xxx[===========]xxx)\n");
+		}
+		// end overlap	(xxx[xx)========]
+		else if ((*seed_ranges)->start < map[1] && (*seed_ranges)->start + (*seed_ranges)->range - 1 >= map[1])
+		{
+			outside_bounds(&tmp, (*seed_ranges)->start, map[1] - (*seed_ranges)->start);
+			inside_bounds(&tmp, (*seed_ranges)->start + map[0] - map[1], (*seed_ranges)->start + (*seed_ranges)->range - map[1]);
+			printf("start %li range %li\n", (*seed_ranges)->start, (*seed_ranges)->range);
+			printf("end overlap	(xxx[xx)========]\n");
+		}
+
+		// start overlap	[========(xx]xxx)
+		else if ((*seed_ranges)->start < map[1] + map[2] && (*seed_ranges)->start + (*seed_ranges)->range - 1 > map[1] + map[2] - 1)
+		{
+			outside_bounds(&tmp, map[1] + map[2], ((*seed_ranges)->start + (*seed_ranges)->range) - (map[1] + map[2]));
+			inside_bounds(&tmp, (*seed_ranges)->start + map[0] - map[1], (map[1] + map[2]) - (*seed_ranges)->start);
+			printf("start %li range %li\n", (*seed_ranges)->start, (*seed_ranges)->range);
+			printf("start overlap	[========(xx]xxx)\n");
+		}
+		else
+		{
+			append_seedrange(&tmp, new_seed_range((*seed_ranges)->start, (*seed_ranges)->range));
+			printf("start %li range %li\n", (*seed_ranges)->start, (*seed_ranges)->range);
+			printf("no overlap	(xxx) [===========] (xxx)\n");
+		}
+		// printf("tmp start %li tmp range %li\n", tmp->start, tmp->range);
+		*seed_ranges = (*seed_ranges)->next;
+	}
+	clear_seedrange(seed_ranges);
+	// printf("tmp %li tmp %li\n", (*seed_ranges)->start, (*seed_ranges)->range);
+	*seed_ranges = tmp;
 }
 
-void	check_map(t_seedrange **seedrange, int fd, char **str)
+void	check_map(t_seedrange **seed_ranges, int fd, char **str)
 {
 	int i = 0;
 	long *map;
-	t_seedrange *tmp;
 
-	tmp = malloc(sizeof(t_seedrange));
-	tmp->start = (*seedrange)->start;
-	tmp->end = (*seedrange)->end;
 	while (*str && isdigit((*str)[0]))
 	{
 		map = store_array(*str, MAP_SIZE);
@@ -59,16 +93,14 @@ void	check_map(t_seedrange **seedrange, int fd, char **str)
 			return ;
 		free(*str);
 		print_long_array(map, "map", MAP_SIZE);
-		convert_seeds((*seedrange, map, tmp);
-		print_long_array(tmp, "tmp", SEED_SIZE);
+		printf("\n");
+		printf("entering handle_intersects\n\n");
+		handle_intersects(seed_ranges, map);
 		*str = get_next_line(fd);
 	}
-	free(*seedrange);
-	*seedrange = tmp;
-	// print_long_array(*seedrange, "new seeds", SEED_SIZE);
 }
 
-int	next_map(char **str, int fd, int times)
+void	next_map(char **str, int fd, int times)
 {
 	while (times > 0)
 	{
@@ -76,45 +108,55 @@ int	next_map(char **str, int fd, int times)
 		*str = get_next_line(fd);
 		// printf("next map %s\n", *str);
 		if (!*str)
-			return (0);
+			return ;
 		times--;
 	}
-	return (1);
 }
 
-t_seedrange **store_seed_ranges(char *str)
+t_seedrange *store_seed_ranges(char *str)
 {
-	t_seedrange **seed_ranges;
-	int index = 0;
+	t_seedrange *seed_ranges;
+	long start;
+	long range;
 	int i = 0;
 
 	i = 0;
-	seed_ranges = calloc(SEED_SIZE / 2, sizeof(t_seedrange *));
 	while (str[i])
 	{
-		seed_ranges[index]->start = atol(str + i);
+		start = atol(str + i);
 		while (isdigit(str[i]))
 			i++;
 		while (!isdigit(str[i]) && str[i])
 			i++;
-		seed_ranges[index]->end = (seed_ranges[index]->start + atol(str + i)) - 1;
+		range = atol(str + i);
 		while (isdigit(str[i]))
 			i++;
 		while (!isdigit(str[i]) && str[i])
 			i++;
-		index++;
+		append_seedrange(&seed_ranges, new_seed_range(start, range));
 	}
 	return (seed_ranges);
 }
 
+long	lowest_location(t_seedrange *seed_ranges, long lowest)
+{
+	while (seed_ranges)
+	{
+		if (seed_ranges->start < lowest)
+			lowest = seed_ranges->start;
+		seed_ranges = seed_ranges->next;
+	}
+	return (lowest);
+}
+
 int main (int argc, char **argv)
 {
-	long final = 0;
 	int fd;
 	int i = 0;
 	int index = 0;
+	long lowest;
 	char *str;
-	t_seedrange **seedranges;
+	t_seedrange *seedranges;
 	int j = 0;
 
 	if (argc != 2)
@@ -138,24 +180,21 @@ int main (int argc, char **argv)
 		seedranges = store_seed_ranges(str + i);
 		free(str);
 		str = get_next_line(fd);
-		while (index < SEED_SIZE)
+		while (1)
 		{
 			if (!str)
 				break ;
 			if (str[0] == '\n')
 				next_map(&str, fd, 2);
-			check_map(&seedranges[index], fd, &str);
+			printf("entering new map\n");
+			if (str)
+				check_map(&seedranges, fd, &str);
 			printf("\n");
-			index++;
 		}
 		break ;
 	}
-	final = seeds[0];
-	for (int x = 0; x < SEED_SIZE; x++)
-	{
-		if (seeds[x] < final)
-			final = seeds[x];
-	}
-	printf("final %li\n", final);
+	// printf("hello\n");
+	lowest = lowest_location(seedranges, seedranges->start);
+	printf("final %li\n", lowest);
 	close(fd);
 }
