@@ -44,6 +44,7 @@ int main (int argc, char **argv)
 	printf("lowest location %li\n", lowest);
 	clear_seedrange(&seedranges);
 	close(fd);
+	exit(EXIT_SUCCESS);
 }
 
 t_seedrange *store_seed_ranges(char *str)
@@ -96,7 +97,7 @@ void	check_map(t_seedrange **seed_ranges, int fd, char **str)
 		if (!map)
 			return ;
 		free(*str);
-		// print_long_array(map, "map", MAP_SIZE);
+		print_long_array(map, "map", MAP_SIZE);
 		handle_intersects(seed_ranges, map, &seed_ranges_tmp);
 		free(map);
 		*str = get_next_line(fd);
@@ -136,7 +137,7 @@ void	handle_intersects(t_seedrange **seed_ranges, long *map, t_seedrange **seed_
 		{
 			inside_bounds(seed_ranges_tmp, (*seed_ranges)->start + map[0] - map[1], (*seed_ranges)->range);
 			printf("start %li range %li\n", (*seed_ranges)->start, (*seed_ranges)->range);
-			printf("inside overlap	[===(xxx)===]\n");
+			printf("inside overlap			[===(xxx)===]\n");
 		}
 		
 		// outside overlap	(xxx[===========]xxx)
@@ -146,7 +147,7 @@ void	handle_intersects(t_seedrange **seed_ranges, long *map, t_seedrange **seed_
 			outside_bounds(&tmp, map[1] + map[2], ((*seed_ranges)->start + (*seed_ranges)->range) - (map[1] + map[2])); // right
 			inside_bounds(seed_ranges_tmp, map[0], map[2]);
 			printf("start %li range %li\n", (*seed_ranges)->start, (*seed_ranges)->range);
-			printf("outside overlap	(xxx[===========]xxx)\n");
+			printf("outside overlap		(xxx[===========]xxx)\n");
 		}
 
 		// end overlap	(xxx[xx)========]
@@ -155,7 +156,7 @@ void	handle_intersects(t_seedrange **seed_ranges, long *map, t_seedrange **seed_
 			outside_bounds(&tmp, (*seed_ranges)->start, map[1] - (*seed_ranges)->start);
 			inside_bounds(seed_ranges_tmp, map[0], (*seed_ranges)->start + (*seed_ranges)->range - map[1]);
 			printf("start %li range %li\n", (*seed_ranges)->start, (*seed_ranges)->range);
-			printf("end overlap	(xxx[xx)========]\n");
+			printf("end overlap			(xxx[xx)========]\n");
 		}
 
 		// start overlap	[========(xx]xxx)
@@ -164,13 +165,13 @@ void	handle_intersects(t_seedrange **seed_ranges, long *map, t_seedrange **seed_
 			outside_bounds(&tmp, map[1] + map[2], ((*seed_ranges)->start + (*seed_ranges)->range) - (map[1] + map[2]));
 			inside_bounds(seed_ranges_tmp, (*seed_ranges)->start + map[0] - map[1], (map[1] + map[2]) - (*seed_ranges)->start);
 			printf("start %li range %li\n", (*seed_ranges)->start, (*seed_ranges)->range);
-			printf("start overlap	[========(xx]xxx)\n");
+			printf("start overlap			[========(xx]xxx)\n");
 		}
 		else
 		{
 			append_seedrange(&tmp, new_seed_range((*seed_ranges)->start, (*seed_ranges)->range));
 			printf("start %li range %li\n", (*seed_ranges)->start, (*seed_ranges)->range);
-			printf("no overlap	(xxx) [===========] (xxx)\n");
+			printf("no overlap		(xxx)	[===========]	(xxx)\n");
 		}
 		*seed_ranges = (*seed_ranges)->next;
 	}
