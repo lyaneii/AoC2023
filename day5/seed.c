@@ -4,7 +4,7 @@
 // test seed 4
 // input seed 20
 
-long	*store_array(char *str, int size)
+long	*current_map_range(char *str, int size)
 {
 	long *array;
 	int i = 0;
@@ -47,7 +47,7 @@ void	check_map(long **seeds, int fd, char **str)
 	memcpy(tmp, *seeds, SEED_SIZE * sizeof(long));
 	while (*str && isdigit((*str)[0]))
 	{
-		map = store_array(*str, MAP_SIZE);
+		map = current_map_range(*str, MAP_SIZE);
 		if (!map)
 			return ;
 		free(*str);
@@ -101,7 +101,7 @@ int main (int argc, char **argv)
 			i++;
 		
 		// store seeds into array
-		seeds = store_array(str + i, SEED_SIZE);
+		seeds = current_map_range(str + i, SEED_SIZE);
 
 		// next line
 		str = get_next_line(fd);
