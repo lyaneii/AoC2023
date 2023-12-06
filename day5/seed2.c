@@ -2,7 +2,7 @@
 #include "part2_utils.h"
 #define MAP_SIZE 3
 
-t_seedrange *store_seed_ranges(char *str);
+t_seedrange	*store_seed_ranges(char *str);
 void		next_map(char **str, int fd, int times);
 void		check_map(t_seedrange **seed_ranges, int fd, char **str);
 long		*current_map_range(char *str, int size);
