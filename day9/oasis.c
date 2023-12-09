@@ -1,6 +1,5 @@
 #include "aoc.h"
 #include "oasis_utils.h"
-# define SIZE 21
 
 int main (int argc, char **argv)
 {
@@ -47,7 +46,7 @@ t_node	*populate_data(int fd)
 
 int	*parse_history(char *str)
 {
-	int	*history = calloc(data_amount(str), sizeof(int));
+	int	*history = calloc(SIZE, sizeof(int));
 	int	i = 0;
 	int	index = 0;
 	
@@ -63,20 +62,16 @@ int	*parse_history(char *str)
 	return (history);
 }
 
-size_t	data_amount(char *str)
+size_t	extrapolate_forwards(t_node *data)
 {
-	int		i = 0;
-	size_t	amount = 0;
+	size_t	sum = 0;
 
-	while (str[i])
+	while (data)
 	{
-		while (isdigit(str[i]) || str[i] == '-')
-			i++;
-		amount++;
-		while (isspace(str[i]))
-			i++;
+		sum += extrapolate_data(data->history, SIZE);
+		data = data->next;
 	}
-	return (amount);
+	return (sum);
 }
 
 size_t	extrapolate_data(int *history, int size)
@@ -104,37 +99,4 @@ size_t	extrapolate_data(int *history, int size)
 	sum = history[size - 1] + sum;
 	free(diff_map);
 	return (sum);
-}
-
-size_t	extrapolate_forwards(t_node *data)
-{
-	size_t	sum = 0;
-
-	while (data)
-	{
-		sum += extrapolate_data(data->history, SIZE);
-		data = data->next;
-	}
-	return (sum);
-}
-
-void	reverse_data(t_node *data)
-{
-	while (data)
-	{
-		reverse_array(data->history, SIZE);
-		data = data->next;
-	}
-}
-
-void	reverse_array(int *array, int size)
-{
-	int	tmp;
-
-	for (int i = 0; i < size / 2; i++)
-	{
-		tmp = array[i];
-		array[i] = array[size - i - 1];
-		array[size - i - 1] = tmp;
-	}
 }

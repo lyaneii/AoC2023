@@ -1,6 +1,7 @@
 #ifndef OASIS_UTILS_H
 # define OASIS_UTILS_H
 # include <stdlib.h>
+# define SIZE 21
 
 typedef struct s_node
 {
@@ -14,7 +15,6 @@ void	append_node(t_node **head, t_node *new_node);
 void	clear_nodes(t_node **head);
 t_node	*populate_data(int fd);
 int		*parse_history(char *str);
-size_t	data_amount(char *str);
 size_t	extrapolate_forwards(t_node *data);
 size_t	extrapolate_data(int *history, int size);
 void	reverse_data(t_node *data);

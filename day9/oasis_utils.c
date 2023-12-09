@@ -43,3 +43,24 @@ void	clear_nodes(t_node **head)
 	}
 	*head = NULL;
 }
+
+void	reverse_data(t_node *data)
+{
+	while (data)
+	{
+		reverse_array(data->history, SIZE);
+		data = data->next;
+	}
+}
+
+void	reverse_array(int *array, int size)
+{
+	int	tmp;
+
+	for (int i = 0; i < size / 2; i++)
+	{
+		tmp = array[i];
+		array[i] = array[size - i - 1];
+		array[size - i - 1] = tmp;
+	}
+}
