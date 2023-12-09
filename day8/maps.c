@@ -8,8 +8,8 @@ int main (int argc, char **argv)
 	size_t	prime_factor;
 	size_t	steps = 0;
 	size_t	*steps2;
-	int		fd;
 	char	*instructions;
+	int		fd;
 	int		points = 0;
 	int		nbr = 2;
 
