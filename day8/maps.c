@@ -66,7 +66,7 @@ int main (int argc, char **argv)
 
 t_node *populate_maps(int fd)
 {
-	t_node	*maps;
+	t_node	*maps = NULL;
 	char	*str = get_next_line(fd);
 	
 	while (str)
