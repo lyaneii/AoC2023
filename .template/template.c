@@ -2,9 +2,8 @@
 
 int main (int argc, char **argv)
 {
-	int fd;
-	int i = 0;
-	char *str;
+	int		fd;
+	char	*str;
 
 	if (argc != 2)
 		return (printf("Usage: %s <filename>\n", argv[0]));
@@ -12,12 +11,12 @@ int main (int argc, char **argv)
 	if (fd == -1)
 		return (-1);
 	
-	while (1)
+	str = get_next_line(fd);
+	while (str)
 	{
-		// initialise variables
+		/* code */
+		free(str);
 		str = get_next_line(fd);
-		if (!str)
-			break ;
 	}
 	close(fd);
 }
