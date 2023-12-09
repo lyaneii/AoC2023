@@ -4,7 +4,7 @@
 
 t_node *new_node(char *current_map)
 {
-	t_node *new_node;
+	t_node	*new_node;
 
 	new_node = malloc(sizeof(t_node));
 	if (!new_node)
@@ -35,7 +35,7 @@ void	append_node(t_node **head, t_node *new_node)
 
 void	clear_maps(t_node **head)
 {
-	t_node *tmp;
+	t_node	*tmp;
 
 	while (*head)
 	{

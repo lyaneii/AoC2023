@@ -8,7 +8,7 @@ int main (int argc, char **argv)
 	size_t	prime_factor;
 	size_t	steps = 0;
 	size_t	*steps2;
-	int 	fd;
+	int		fd;
 	char	*instructions;
 	int		points = 0;
 	int		nbr = 2;
@@ -26,7 +26,7 @@ int main (int argc, char **argv)
 	maps = populate_maps(fd);
 	connect_maps(&maps);
 
-	// find "ZZZ" exit with "AAA" as starting point (comment this out for part 2)
+	// find "ZZZ" exit with "AAA" as starting point
 	start = start_position(maps, "AAA", 0);
 	steps = find_path(&start, instructions, "ZZZ", 0);
 	printf("part 1 %li\n", steps);
@@ -79,9 +79,9 @@ t_node *populate_maps(int fd)
 
 void	connect_maps(t_node **head)
 {
-	t_node **tmp = head;
-	t_node *compare;
-	int size = maps_size(*head);
+	t_node	**tmp = head;
+	t_node	*compare;
+	int		size = maps_size(*head);
 
 	for (int i = 0; i < size; i++)
 	{
@@ -100,10 +100,10 @@ void	connect_maps(t_node **head)
 
 int	find_path(t_node **maps, char *instructions, const char *to_find, int offset)
 {
-	int i;
-	int found = 0;
-	int steps = 0;
-	int len = 0;
+	int	i;
+	int	found = 0;
+	int	steps = 0;
+	int	len = 0;
 
 	while (to_find[len])
 		len++;
@@ -130,7 +130,7 @@ int	find_path(t_node **maps, char *instructions, const char *to_find, int offset
 
 int	count_starting_points(t_node *maps)
 {
-	int points = 0;
+	int	points = 0;
 
 	while (maps)
 	{
@@ -141,7 +141,7 @@ int	count_starting_points(t_node *maps)
 	return (points);
 }
 
-int is_prime(int nbr)
+int	is_prime(int nbr)
 {
 	if (nbr <= 1)
 		return (0);
@@ -157,18 +157,17 @@ int is_prime(int nbr)
 	return (1);
 }
 
-int find_next_prime(int nbr)
+int	find_next_prime(int nbr)
 {
+	int prime = nbr;
+
 	if (nbr <= 1)
 		return (2);
-	int prime = nbr;
-	int found = 0;
-
-	while (found != 1)
+	while (1)
 	{
 		prime++;
 		if (is_prime(prime))
-			found = 1;
+			break ;
 	}
 	return (prime);
 }
