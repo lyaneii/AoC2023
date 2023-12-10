@@ -18,6 +18,14 @@ void	free_all(void **ptr, int size)
 	ptr = NULL;
 }
 
+void	free_2d_array(char **ptr)
+{
+	for (int i = 0; ptr[i]; i++)
+		free(ptr[i]);
+	free(ptr);
+	ptr = NULL;
+}
+
 void	print_long_array(long *arr, const char *str, int size)
 {
 	int i = 0;
