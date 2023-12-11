@@ -8,8 +8,6 @@ int	main (int argc, char **argv)
 	int		fd;
 	int		start_row, distance, nest_size;
 
-	nest_size = 0;
-	printf("%d\n", nest_size);
 	if (argc != 2)
 		return (printf("Usage: %s <filename>\n", argv[0]));
 	fd = open(argv[1], O_RDONLY);
