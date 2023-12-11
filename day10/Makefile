@@ -1,7 +1,7 @@
 NAME = output
 
 SRC =	pipes.c node_utils.c parse_map.c \
-		loop_map.c navigation.c enclosed_areas.c
+		loop_map.c navigation.c
 
 CFLAGS = -Wall -Wextra -Werror
 
