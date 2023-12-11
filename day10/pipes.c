@@ -74,7 +74,7 @@ Nav	determine_direction(char **map, int row, int column, Nav previous)
 			return (evaluate_south(map[row][column]));
 		case WEST:
 			return (evaluate_west(map[row][column]));
-		case INVALID:
+		default:
 			break ;
 	}
 	return (INVALID);
@@ -126,10 +126,7 @@ int	evaluate_pipes(char *row, int *column)
 		while (row[*column] == '-')
 			(*column)++;
 		if (row[*column] == 'J')
-		{
-			(*column)++;
-			return (1);
-		}
+			goto end;
 		(*column)++;
 		return (2);
 	}
@@ -139,13 +136,11 @@ int	evaluate_pipes(char *row, int *column)
 		while (row[*column] == '-')
 			(*column)++;
 		if (row[*column] == '7')
-		{
-			(*column)++;
-			return (1);
-		}
+			goto end;
 		(*column)++;
 		return (2);
 	}
-	(*column)++;
-	return (1);
+	end:
+		(*column)++;
+		return (1);
 }

@@ -73,9 +73,7 @@ char	determine_loop_connection(char **map, int row, int pos)
 				return ('-');
 			else
 				return ('7');
-		case START:
-			break ;
-		case INVALID:
+		default:
 			break ;
 	}
 	return (0);
